@@ -1,0 +1,97 @@
+services:
+  Gitea:
+    container_name: Gitea
+    image: docker.gitea.com/gitea:latest
+    restart: unless-stopped
+    networks:
+      - Gitea
+      - GiteaDB
+      - GiteaCache
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - APP_NAME=${APP_NAME}
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=GiteaDB:5432
+      - GITEA__database__NAME=${POSTGRES_DB}
+      - GITEA__database__USER=${POSTGRES_USER}
+      - GITEA__database__PASSWD=${POSTGRES_PASSWORD}
+      - GITEA__mailer__ENABLED=true
+      - GITEA__mailer__PROTOCOL=smtps
+      - GITEA__mailer__SMTP_ADDR=${SMTP_HOST}
+      - GITEA__mailer__SMTP_PORT=465
+      - GITEA__mailer__USER=${SMTP_USER}
+      - GITEA__mailer__PASSWD=${SMTP_PASSWORD}
+      - GITEA__mailer__FROM=${SMTP_FROM}
+      - GITEA__mailer__FROM_DISPLAY_NAME_FORMAT='{{ .DisplayName }} (by {{ .AppName }})'
+      - GITEA__mailer__SUBJECT_PREFIX=[Gitea]
+      - GITEA__webhook__ALLOWED_HOST_LIST=${WEBHOOK_ALLOWED_HOST_LIST}
+      - GITEA__service__DISABLE_REGISTRATION=true
+      - GITEA__service__ENABLE_NOTIFY_MAIL=true
+      - GITEA__service__ENABLE_BASIC_AUTHENTICATION=false
+      - GITEA__service__REQUIRE_CAPTCHA_FOR_LOGIN=true
+      - GITEA__service__DEFAULT_KEEP_EMAIL_PRIVATE=true
+      - GITEA__security__REVERSE_PROXY_TRUSTED_PROXIES=172.16.0.0/16 # Change this as needed if using different subnet for Docker Networks
+      - GITEA__cache__ADAPTER=redis
+      - GITEA__cache__HOST=redis://GiteaCache:6379/0?pool_size=100&idle_timeout=180s
+      - GITEA__git_timeout__DEFAULT=360
+      - GITEA__git_timeout__MIGRATE=1200
+      - GITEA__git_timeout__MIRROR=600
+      - GITEA__git_timeout__CLONE=300
+      - GITEA__git_timeout__PULL=300
+      - GITEA__git_timeout__GC=60
+      - GITEA__actions__ZOMBIE_TASK_TIMEOUT=15m
+    depends_on:
+      - GiteaDB
+      - GiteaCache
+    volumes:
+      - ${DOCKER_VOLUMES}/Gitea/data:/data
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1GB
+
+  GiteaCache:
+    container_name: GiteaCache
+    image: redis
+    restart: unless-stopped
+    networks:
+      - GiteaCache
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+  GiteaDB:
+    container_name: GiteaDB
+    image: postgres:17-alpine
+    restart: unless-stopped
+    networks:
+      - GiteaDB
+    shm_size: 128mb
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ${DOCKER_VOLUMES}/Gitea/database:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1GB
+
+networks:
+  Gitea:
+    name: Gitea
+    external: true
+  GiteaDB:
+    name: GiteaDB
+    external: true
+  GiteaCache:
+    name: GiteaCache
+    external: true
