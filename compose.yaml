@@ -1,3 +1,4 @@
+name: Gitea
 services:
   Gitea:
     container_name: Gitea
