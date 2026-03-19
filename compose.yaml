@@ -44,7 +44,7 @@ services:
       - GITEA__git_timeout__GC=60
       - GITEA__actions__ZOMBIE_TASK_TIMEOUT=15m
       - GITEA__oauth__ACCESS_TOKEN_EXPIRATION_TIME=43200 # 12 hour expiration time -- See https://forum.gitea.com/t/authentication-failed-for-but-running-the-command-again-works/8521/15
-      - GITEA__repository_ENABLE_PUSH_CREATE_USER=true
+      - GITEA__repository__ENABLE_PUSH_CREATE_USER=true
     depends_on:
       - GiteaDB
       - GiteaCache
