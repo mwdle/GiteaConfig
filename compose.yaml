@@ -45,7 +45,7 @@ services:
       - GITEA__actions__ZOMBIE_TASK_TIMEOUT=15m
       - GITEA__oauth__ACCESS_TOKEN_EXPIRATION_TIME=43200 # 12 hour expiration time -- See https://forum.gitea.com/t/authentication-failed-for-but-running-the-command-again-works/8521/15
       - GITEA__repository__ENABLE_PUSH_CREATE_USER=true
-      - GITEA__webhook__DELIVER_TIMEOUT=30
+      - GITEA__webhook__DELIVER_TIMEOUT=60
       - GITEA__webhook__ALLOWED_HOST_LIST=private
     depends_on:
       - GiteaDB
