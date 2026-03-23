@@ -67,6 +67,7 @@ services:
     image: redis:8.6.1-alpine3.23@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
     user: "1000:1000"
     restart: unless-stopped
+    command: redis-server --save ""
     networks:
       - GiteaCache
     deploy:
