@@ -2,17 +2,20 @@ name: Gitea
 services:
   Gitea:
     container_name: Gitea
-    image: docker.gitea.com/gitea:latest
+    image: docker.gitea.com/gitea:1.25.5-rootless
     restart: unless-stopped
     networks:
       - Gitea
       - GiteaDB
       - GiteaCache
+    ports:
+      - "2222:2222"
     environment:
       - USER_UID=1000
       - USER_GID=1000
       - APP_NAME=${APP_NAME}
       - GITEA__server__ROOT_URL=${ROOT_URL}
+      - GITEA__server__START_SSH_SERVER=true
       - GITEA__database__DB_TYPE=postgres
       - GITEA__database__HOST=GiteaDB:5432
       - GITEA__database__NAME=${POSTGRES_DB}
@@ -51,7 +54,8 @@ services:
       - GiteaDB
       - GiteaCache
     volumes:
-      - ${DOCKER_VOLUMES}/Gitea/data:/data
+      - ${DOCKER_VOLUMES}/Gitea/data:/var/lib/gitea
+      - ${DOCKER_VOLUMES}/Gitea/config:/etc/gitea
       - /etc/localtime:/etc/localtime:ro
     deploy:
       resources:
