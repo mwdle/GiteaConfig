@@ -3,6 +3,7 @@ services:
   Gitea:
     container_name: Gitea
     image: docker.gitea.com/gitea:1.25.5-rootless
+    user: "1000:1000"
     restart: unless-stopped
     networks:
       - Gitea
@@ -11,8 +12,6 @@ services:
     ports:
       - "2222:2222"
     environment:
-      - USER_UID=1000
-      - USER_GID=1000
       - APP_NAME=${APP_NAME}
       - GITEA__server__ROOT_URL=${ROOT_URL}
       - GITEA__server__START_SSH_SERVER=true
@@ -65,7 +64,8 @@ services:
 
   GiteaCache:
     container_name: GiteaCache
-    image: redis
+    image: redis:8.6.1-alpine3.23
+    user: "1000:1000"
     restart: unless-stopped
     networks:
       - GiteaCache
@@ -77,7 +77,8 @@ services:
 
   GiteaDB:
     container_name: GiteaDB
-    image: postgres:17-alpine
+    image: postgres:18.3-alpine3.23
+    user: "1000:1000"
     restart: unless-stopped
     networks:
       - GiteaDB
@@ -87,7 +88,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ${DOCKER_VOLUMES}/Gitea/database:/var/lib/postgresql/data
+      - ${DOCKER_VOLUMES}/Gitea/database:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro
     deploy:
       resources:
