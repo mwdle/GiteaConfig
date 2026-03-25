@@ -3,7 +3,7 @@ services:
   Gitea:
     container_name: Gitea
     image: docker.gitea.com/gitea:1.25.5-rootless@sha256:be0b89adf2fc8657df508303d919c3be33e6413605882919f702177d62960c9a
-    user: "1000:1000"
+    user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
       - Gitea
@@ -65,7 +65,7 @@ services:
   GiteaCache:
     container_name: GiteaCache
     image: redis:8.6.1-alpine3.23@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
-    user: "1000:1000"
+    user: "${UID}:${GID}"
     restart: unless-stopped
     command: redis-server --save ""
     networks:
@@ -79,7 +79,7 @@ services:
   GiteaDB:
     container_name: GiteaDB
     image: postgres:18.3-alpine3.23@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
-    user: "1000:1000"
+    user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
       - GiteaDB
