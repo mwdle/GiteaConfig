@@ -23,7 +23,7 @@ services:
       - GITEA__mailer__ENABLED=true
       - GITEA__mailer__PROTOCOL=smtps
       - GITEA__mailer__SMTP_ADDR=${SMTP_HOST}
-      - GITEA__mailer__SMTP_PORT=465
+      - GITEA__mailer__SMTP_PORT=${SMTP_PORT}
       - GITEA__mailer__USER=${SMTP_USER}
       - GITEA__mailer__PASSWD=${SMTP_PASSWORD}
       - GITEA__mailer__FROM=${SMTP_FROM}
