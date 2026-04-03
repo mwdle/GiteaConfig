@@ -3,7 +3,6 @@ services:
   Gitea:
     container_name: Gitea
     image: docker.gitea.com/gitea:1.25.5-rootless@sha256:be0b89adf2fc8657df508303d919c3be33e6413605882919f702177d62960c9a
-    user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
       - Gitea
@@ -56,6 +55,11 @@ services:
       - ${DOCKER_VOLUMES}/Gitea/data:/var/lib/gitea
       - ${DOCKER_VOLUMES}/Gitea/config:/etc/gitea
       - /etc/localtime:/etc/localtime:ro
+
+    user: "${UID}:${GID}"
+    security_opt:
+      - no-new-privileges:true
+
     deploy:
       resources:
         limits:
@@ -65,11 +69,15 @@ services:
   GiteaCache:
     container_name: GiteaCache
     image: redis:8.6.2-alpine3.23@sha256:81b6f81d6a6c5b9019231a2e8eb10085e3a139a34f833dcc965a8a959b040b72
-    user: "${UID}:${GID}"
     restart: unless-stopped
     command: redis-server --save ""
     networks:
       - GiteaCache
+
+    user: "${UID}:${GID}"
+    security_opt:
+      - no-new-privileges:true
+
     deploy:
       resources:
         limits:
@@ -79,7 +87,6 @@ services:
   GiteaDB:
     container_name: GiteaDB
     image: postgres:18.3-alpine3.23@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
-    user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
       - GiteaDB
@@ -91,6 +98,11 @@ services:
     volumes:
       - ${DOCKER_VOLUMES}/Gitea/database:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro
+
+    user: "${UID}:${GID}"
+    security_opt:
+      - no-new-privileges:true
+
     deploy:
       resources:
         limits:
