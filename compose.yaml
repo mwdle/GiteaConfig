@@ -47,7 +47,6 @@ services:
       - GITEA__oauth__ACCESS_TOKEN_EXPIRATION_TIME=43200 # 12 hour expiration time -- See https://forum.gitea.com/t/authentication-failed-for-but-running-the-command-again-works/8521/15
       - GITEA__repository__ENABLE_PUSH_CREATE_USER=true
       - GITEA__webhook__DELIVER_TIMEOUT=60
-      - GITEA__webhook__ALLOWED_HOST_LIST=private
     volumes:
       - ${DOCKER_VOLUMES}/Gitea/data:/var/lib/gitea
       - ${DOCKER_VOLUMES}/Gitea/config:/etc/gitea
@@ -69,11 +68,7 @@ services:
     logging:
       driver: "journald"
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -fSs -o /dev/null http://localhost:3000/api/healthz || exit 1",
-        ]
+      test: curl -fSs -o /dev/null http://localhost:3000/api/healthz || exit 1
       interval: 1m
       timeout: 5s
       retries: 3
@@ -144,7 +139,7 @@ services:
     logging:
       driver: "journald"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gitea -d gitea || exit 1"]
+      test: pg_isready -U ${DB_USER} -d gitea || exit 1
       interval: 1m
       timeout: 5s
       retries: 3
