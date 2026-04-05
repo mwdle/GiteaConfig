@@ -37,14 +37,7 @@ services:
       - GITEA__security__REVERSE_PROXY_TRUSTED_PROXIES=172.16.0.0/16 # Change this as needed if using different subnet for Docker Networks
       - GITEA__cache__ADAPTER=redis
       - GITEA__cache__HOST=redis://GiteaCache:6379/0?pool_size=100&idle_timeout=180s
-      - GITEA__git_timeout__DEFAULT=360
-      - GITEA__git_timeout__MIGRATE=1200
-      - GITEA__git_timeout__MIRROR=600
-      - GITEA__git_timeout__CLONE=300
-      - GITEA__git_timeout__PULL=300
-      - GITEA__git_timeout__GC=60
       - GITEA__actions__ZOMBIE_TASK_TIMEOUT=15m
-      - GITEA__oauth__ACCESS_TOKEN_EXPIRATION_TIME=43200 # 12 hour expiration time -- See https://forum.gitea.com/t/authentication-failed-for-but-running-the-command-again-works/8521/15
       - GITEA__repository__ENABLE_PUSH_CREATE_USER=true
       - GITEA__webhook__DELIVER_TIMEOUT=60
     volumes:
@@ -66,7 +59,7 @@ services:
       - ALL
 
     logging:
-      driver: "journald"
+      driver: journald
     healthcheck:
       test: curl -fSs -o /dev/null http://localhost:3000/api/healthz || exit 1
       interval: 1m
@@ -97,7 +90,7 @@ services:
       - ALL
 
     logging:
-      driver: "journald"
+      driver: journald
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1m
@@ -137,7 +130,7 @@ services:
       - ALL
 
     logging:
-      driver: "journald"
+      driver: journald
     healthcheck:
       test: pg_isready -U ${DB_USER} -d gitea || exit 1
       interval: 1m
