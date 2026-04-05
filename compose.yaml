@@ -74,37 +74,6 @@ services:
           memory: 512M
           pids: 30
 
-  GiteaCache:
-    container_name: GiteaCache
-    image: redis:8.6.2-alpine3.23@sha256:81b6f81d6a6c5b9019231a2e8eb10085e3a139a34f833dcc965a8a959b040b72
-    restart: unless-stopped
-    command: redis-server --save ""
-    networks:
-      - GiteaCache
-
-    user: "${UID}:${GID}"
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-
-    logging:
-      driver: journald
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-
-    deploy:
-      resources:
-        limits:
-          cpus: 0.25
-          memory: 256M
-          pids: 30
-
   GiteaDB:
     container_name: GiteaDB
     image: postgres:18.3-alpine3.23@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
@@ -136,13 +105,44 @@ services:
       interval: 1m
       timeout: 5s
       retries: 3
-      start_period: 30s
+      start_period: 15s
 
     deploy:
       resources:
         limits:
           cpus: 0.5
           memory: 512M
+          pids: 30
+
+  GiteaCache:
+    container_name: GiteaCache
+    image: redis:8.6.2-alpine3.23@sha256:81b6f81d6a6c5b9019231a2e8eb10085e3a139a34f833dcc965a8a959b040b72
+    restart: unless-stopped
+    command: redis-server --save ""
+    networks:
+      - GiteaCache
+
+    user: "${UID}:${GID}"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    logging:
+      driver: journald
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          cpus: 0.25
+          memory: 256M
           pids: 30
 
 networks:
