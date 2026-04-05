@@ -78,8 +78,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1"
-          memory: 1GB
+          cpus: 0.75
+          memory: 512M
 
   GiteaCache:
     container_name: GiteaCache
@@ -108,8 +108,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 512M
+          cpus: 0.25
+          memory: 256M
 
   GiteaDB:
     container_name: GiteaDB
@@ -117,7 +117,7 @@ services:
     restart: unless-stopped
     networks:
       - GiteaDB
-    shm_size: 512M
+    shm_size: 256M
     environment:
       - POSTGRES_DB=gitea
       - POSTGRES_USER=${DB_USER}
@@ -127,14 +127,28 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
     user: "${UID}:${GID}"
+    read_only: true
+    tmpfs:
+      - /var/run/postgresql
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    logging:
+      driver: "journald"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gitea -d gitea || exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1GB
+          cpus: 0.5
+          memory: 512M
 
 networks:
   Gitea:
