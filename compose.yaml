@@ -80,6 +80,7 @@ services:
         limits:
           cpus: 0.75
           memory: 512M
+          pids: 30
 
   GiteaCache:
     container_name: GiteaCache
@@ -110,6 +111,7 @@ services:
         limits:
           cpus: 0.25
           memory: 256M
+          pids: 30
 
   GiteaDB:
     container_name: GiteaDB
@@ -149,6 +151,7 @@ services:
         limits:
           cpus: 0.5
           memory: 512M
+          pids: 30
 
 networks:
   Gitea:
