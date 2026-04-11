@@ -39,6 +39,7 @@ services:
       - GITEA__cache__HOST=redis://GiteaCache:6379/0?pool_size=100&idle_timeout=180s
       - GITEA__actions__ZOMBIE_TASK_TIMEOUT=15m
       - GITEA__repository__ENABLE_PUSH_CREATE_USER=true
+      - GITEA__repository__ENABLE_PUSH_CREATE_ORG=true
       - GITEA__webhook__DELIVER_TIMEOUT=60
     volumes:
       - ${DOCKER_VOLUMES}/Gitea/data:/var/lib/gitea
